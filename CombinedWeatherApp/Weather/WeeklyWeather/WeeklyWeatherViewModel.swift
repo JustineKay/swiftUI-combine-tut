@@ -37,8 +37,14 @@ class WeeklyWeatherViewModel: ObservableObject, Identifiable {
   private let weatherFetcher: WeatherFetchable
   private var disposables = Set<AnyCancellable>()
 
-  init(weatherFetcher: WeatherFetchable) {
+  init(weatherFetcher: WeatherFetchable,
+       scheduler: DispatchQueue = DispatchQueue(label: "WeatherViewModel")) {
     self.weatherFetcher = weatherFetcher
+
+    _ = $city // city can be observed and can make use of any other method available to `Publisher`
+      .dropFirst(1) // as soon as it's created, $city emits it first value -> an empty string. we want to avoid this
+      .debounce(for: .seconds(0.5), scheduler: scheduler) // w/o debounce 'fetchWeather' would make a new HTTP request with every letter typed
+      .sink(receiveValue: fetchWeather(forCity:)) // observe with 'sink' and handle with 'fetchWeather`
   }
 
   func fetchWeather(forCity city: String) {

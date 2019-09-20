@@ -50,7 +50,7 @@ extension WeatherFetcher: WeatherFetchable {
     static let scheme = "https"
     static let host = "api.openweathermap.org"
     static let path = "/data/2.5"
-    static let key = "<cadd71ca27fddbdafa5de0c94f770ecd>"
+    static let key = "cadd71ca27fddbdafa5de0c94f770ecd"
   }
 
   func weeklyWeatherForecast(forCity city: String) -> AnyPublisher<WeeklyForecastResponse, WeatherError> {
